@@ -23,9 +23,9 @@ WINDOW = pygame.display.set_mode((WINDOW_SIZE - 40, WINDOW_SIZE - 200))
 FONT = pygame.font.Font(None, TILE_SIZE//3)
 clock = pygame.time.Clock()
 
-#Tai anh len man hinh
+#Process photos and upload
 def loadImage():
-    image = pygame.image.load('E:\OneDrive - Thuyloi University\AI\BaiTapLon\image.jpg')
+    image = pygame.image.load('image.jpg')
     image = pygame.transform.scale(image, (WINDOW_SIZE//2, WINDOW_SIZE//2))
     tiles = []
     for i in range(BOARD_SIZE):
@@ -37,21 +37,21 @@ def loadImage():
         tiles.append(row)
     return tiles
 
-#Ve bang game len man hinh
+#Draw board
 def drawBoard(board, start_pos):
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
             if board[i][j] != 0:
                 WINDOW.blit(board[i][j], (start_pos[0] + j*TILE_SIZE, start_pos[1] + i*TILE_SIZE))
 
-#Lay vi tri o trong trong hinh    
+#Get the position of the empty tile  
 def getEmptyTile(board):
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
             if board[i][j] == 0:
                 return (i, j)
 
-#Di chuyen o trong          
+#Move tile          
 def move(board, x, y):
     emptyTile = getEmptyTile(board)
     if emptyTile[0] + x < 0 or emptyTile[0] + x >= BOARD_SIZE or emptyTile[1] + y < 0 or emptyTile[1] + y >= BOARD_SIZE:
@@ -59,20 +59,19 @@ def move(board, x, y):
     board[emptyTile[0]][emptyTile[1]], board[emptyTile[0] + x][emptyTile[1] + y] = board[emptyTile[0] + x][emptyTile[1] + y], board[emptyTile[0]][emptyTile[1]]
     return True
 
-#Xao tron bang de bat dau choi, numMove la so lan tron bang
+#Generate random puzzles with numMove times
 def shuffleBoard(board, numMove):
     for _ in range(numMove):
         while not move(board, random.choice([-1, 0, 1]), random.choice([-1, 0, 1])):
             pass
 
-#Ve cac nut len man hinh
+#Draw buttons
 def drawButton(button, dx, dy, string):
     pygame.draw.rect(WINDOW, BLACK, button)
     text = FONT.render(string, True, WHITE)
     WINDOW.blit(text, (button.x + dx, button.y + dy))
 
 def main():
-    #board = [[(BOARD_SIZE*j)+i+1 for i in range(BOARD_SIZE)] for j in range(BOARD_SIZE)]
     board = loadImage()
     board[BOARD_SIZE-1][BOARD_SIZE-1] = 0
 
@@ -80,9 +79,7 @@ def main():
     shuffleBoard(board, 1)
     boardTemp = [row.copy() for row in board]
 
-    #Nut thoat tro choi
     exitButton = pygame.Rect(WINDOW_SIZE//2, WINDOW_SIZE - 330, 60, 30)
-    #Nut choi lai tu dau
     replayButton = pygame.Rect(WINDOW_SIZE//2 - 150, WINDOW_SIZE - 330, 100, 30)
 
     while True:
@@ -110,17 +107,18 @@ def main():
         drawBoard(board, (15,0))
         drawBoard(targetBoard, (WINDOW_SIZE//2, 0))
 
-        #Ve khung hinh chu nhat xung quanh bang
+        #Draw the border
         pygame.draw.rect(WINDOW, BLACK, (15, 0, WINDOW_SIZE//2 - 60, WINDOW_SIZE//2 - 60), 1)
         pygame.draw.rect(WINDOW, BLACK, (WINDOW_SIZE//2, 0, WINDOW_SIZE//2 - 60, WINDOW_SIZE//2 - 60), 1)
 
         drawButton(replayButton, 6, 7, 'Play Again')
         drawButton(exitButton, 15, 7, 'Exit')
 
-        #Cap nhat man hinh trang thai
+        #Update screen
         pygame.display.update()
         clock.tick(FPS)
 
+        #Check status
         if board == targetBoard:
             welcomText = FONT.render('Ban da hoan thanh !', True, BLACK)
             WINDOW.blit(welcomText, (190, WINDOW_SIZE//2 + 30))
