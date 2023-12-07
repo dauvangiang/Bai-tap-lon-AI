@@ -38,11 +38,11 @@ def loadImage():
     return tiles
 
 #Draw board
-def drawBoard(board, start_pos):
+def drawBoard(board, startPos):
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
             if board[i][j] != 0:
-                WINDOW.blit(board[i][j], (start_pos[0] + j*TILE_SIZE, start_pos[1] + i*TILE_SIZE))
+                WINDOW.blit(board[i][j], (startPos[0] + j*TILE_SIZE, startPos[1] + i*TILE_SIZE))
 
 #Get the position of the empty tile  
 def getEmptyTile(board):
@@ -54,7 +54,7 @@ def getEmptyTile(board):
 #Move tile          
 def move(board, x, y):
     emptyTile = getEmptyTile(board)
-    if emptyTile[0] + x < 0 or emptyTile[0] + x >= BOARD_SIZE or emptyTile[1] + y < 0 or emptyTile[1] + y >= BOARD_SIZE:
+    if (x != 0 and y != 0) or emptyTile[0] + x < 0 or emptyTile[0] + x >= BOARD_SIZE or emptyTile[1] + y < 0 or emptyTile[1] + y >= BOARD_SIZE:
         return False
     board[emptyTile[0]][emptyTile[1]], board[emptyTile[0] + x][emptyTile[1] + y] = board[emptyTile[0] + x][emptyTile[1] + y], board[emptyTile[0]][emptyTile[1]]
     return True
@@ -71,12 +71,12 @@ def drawButton(button, dx, dy, string):
     text = FONT.render(string, True, WHITE)
     WINDOW.blit(text, (button.x + dx, button.y + dy))
 
+#Main function
 def main():
     board = loadImage()
     board[BOARD_SIZE-1][BOARD_SIZE-1] = 0
-
     targetBoard = [row.copy() for row in board]
-    shuffleBoard(board, 1)
+    shuffleBoard(board, 100)
     boardTemp = [row.copy() for row in board]
 
     exitButton = pygame.Rect(WINDOW_SIZE//2, WINDOW_SIZE - 330, 60, 30)
