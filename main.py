@@ -48,7 +48,7 @@ def main():
                 elif helpButton.collidepoint(event.pos):
                     showSolButton = not showSolButton
                 elif bfsButton.collidepoint(event.pos):
-                    if state != stateTemp:
+                    if state != stateTemp or len(bfs) <= 1:
                         Puzzle.numOfInstances = 0
                         t0 = time.time()
                         bfs = bfsSearch(state)
@@ -58,7 +58,7 @@ def main():
                     detailBfs[-1] = 1
                     showSolButton = not showSolButton
                 elif astarButton.collidepoint(event.pos):
-                    if state != stateTemp:
+                    if state != stateTemp or len(astar) <= 1:
                         Puzzle.numOfInstances = 0
                         t0 = time.time()
                         astar = astarSearch(state)

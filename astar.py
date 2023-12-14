@@ -15,8 +15,7 @@ def astarSearch(startState):
             return curr.findSolution()
         children = curr.createChild()
         for child in children:
-            tmp = [row.copy() for row in child.state]
-            if tuple(map(tuple, tmp)) not in exp:
+            if tuple(map(tuple, child.state)) not in exp:
                 order += 1
                 queue.put((child.evalFunc, order, child))
     return

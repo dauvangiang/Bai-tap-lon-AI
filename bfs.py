@@ -14,8 +14,7 @@ def bfsSearch(startState):
         exp[tuple(map(tuple, curr.state))] = 0b0
         children = curr.createChild()
         for child in children:
-            tmp = [row.copy() for row in child.state]
-            if tuple(map(tuple, tmp)) not in exp:
+            if tuple(map(tuple, child.state)) not in exp:
                 if child.check():
                     return child.findSolution()
                 queue.put(child)
