@@ -2,6 +2,9 @@ import pygame
 import random
 import time
 
+# Size of board
+BOARD_SIZE = 3
+
 # Constants for the game
 CELL_SIZE = 100
 WINDOW_SIZE = 700
@@ -17,7 +20,7 @@ pygame.init()
 
 # Set up some variables
 WINDOW = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE - 50))
-FONT = pygame.font.Font(None, CELL_SIZE//4)
+FONT = pygame.font.Font(None, 25)
 font = pygame.font.Font(None, 22)
 clock = pygame.time.Clock()
 exitButton = pygame.Rect(WINDOW_SIZE//2 - 100, WINDOW_SIZE//2 - 20, 90, 30)
@@ -28,8 +31,8 @@ astarButton = pygame.Rect(WINDOW_SIZE - 150, WINDOW_SIZE//2 - 4, 76, 30)
 
 # Draw state
 def drawState(state, startPos):
-    for i in range(3):
-        for j in range(3):
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
             if state[i][j] != 0:
                 WINDOW.blit(state[i][j], (startPos[0] + j*CELL_SIZE, startPos[1] + i*CELL_SIZE))
 # Draw button
@@ -94,10 +97,10 @@ def loadImage():
     image = pygame.image.load('image.jpg')
     image = pygame.transform.scale(image, (WINDOW_SIZE//2, WINDOW_SIZE//2))
     cells = []
-    for i in range(3):
+    for i in range(BOARD_SIZE):
         row = []
-        for j in range(3):
-            if (i == 2 and j == 2):
+        for j in range(BOARD_SIZE):
+            if (i == BOARD_SIZE - 1 and j == BOARD_SIZE - 1):
                 row.append(0)
             else:
                 rect = pygame.Rect(j*CELL_SIZE, i*CELL_SIZE, CELL_SIZE, CELL_SIZE)
@@ -111,15 +114,15 @@ GOAL  = loadImage()
 
 # Get the cell index
 def getIndex(state, cell):
-    for i in range(3):
-        for j in range(3):
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
             if state[i][j] == cell:
                 return (i, j)
             
 # Move empty cell
 def moveEmptyCell(state, x, y, i = None, j = None):
     index = getIndex(state, 0) if (i == None and j == None) else (i, j)
-    if (x != 0 and y != 0) or index[0] + x < 0 or index[0] + x >= 3 or index[1] + y < 0 or index[1] + y >= 3:
+    if (x != 0 and y != 0) or index[0] + x < 0 or index[0] + x >= BOARD_SIZE or index[1] + y < 0 or index[1] + y >= BOARD_SIZE:
         return False
     state[index[0]][index[1]], state[index[0] + x][index[1] + y] = state[index[0] + x][index[1] + y], state[index[0]][index[1]]
     return True
@@ -173,8 +176,8 @@ class Puzzle:
     # Calculate heuristic value
     def calcHeuristicVal(self):
         self.heuristic = 0
-        for i in range(3):
-            for j in range(3):
+        for i in range(BOARD_SIZE):
+            for j in range(BOARD_SIZE):
                 if self.state[i][j] != 0:
                     iGoal, jGoal = getIndex(GOAL, self.state[i][j])
                     self.heuristic += abs(iGoal - i) + abs(jGoal - j)
@@ -188,9 +191,9 @@ class Puzzle:
         i, j = getIndex(self.state, 0)
         actions = ['U', 'D', 'L', 'R']
         if i == 0: actions.remove('U')
-        elif i == 2: actions.remove('D')
+        elif i == BOARD_SIZE - 1: actions.remove('D')
         if j == 0: actions.remove('L')
-        elif j == 2: actions.remove('R')
+        elif j == BOARD_SIZE - 1: actions.remove('R')
         return actions
     
     # Create child states
