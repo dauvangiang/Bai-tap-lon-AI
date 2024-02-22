@@ -5,6 +5,8 @@ from puzzle import *
 from bfs import bfsSearch
 from astar import astarSearch
 
+#Test
+
 #Main function
 def main():
     state = [row.copy() for row in GOAL]
